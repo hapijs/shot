@@ -25,10 +25,5 @@
     "test-cov": "lab -a code -t 100 -L",
     "test-cov-html": "lab -a code -r html -o coverage.html -L"
   },
-  "licenses": [
-    {
-      "type": "BSD",
-      "url": "http://github.com/hapijs/shot/raw/master/LICENSE"
-    }
-  ]
+  "license": "BSD-3-Clause"
 }
