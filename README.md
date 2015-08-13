@@ -57,6 +57,7 @@ Injects a fake request into an HTTP server.
   - `headers` - an optional object containing request headers.
   - `remoteAddress` - an optional string specifying the client remote address. Defaults to `'127.0.0.1'`.
   - `payload` - an optional request payload. Can be a string, Buffer or object.
+  - `timeout` -  The number of milliseconds to wait without receiving a response before aborting the request. Defaults to unlimited. A timedout inject will have `statusCode` set to 503 (Service Unavailable).
   - `simulate` - an object containing flags to simulate various conditions:
     - `end` - indicates whether the request will fire an `end` event. Defaults to `undefined`, meaning an `end` event will fire.
     - `split` - indicates whether the request payload will be split into chunks. Defaults to `undefined`, meaning payload will not be chunked.
