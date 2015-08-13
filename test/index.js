@@ -468,6 +468,41 @@ describe('inject()', function () {
         });
 
     });
+
+    it('times out', function (done) {
+
+        var output = 'example.com:8080|/hello';
+        var dispatch = function (req, res) {
+
+            res.writeHead(200, { 'Content-Type': 'text/plain', 'Content-Length': output.length });
+        };
+
+        var body = 'Peace and not war is the father of all things';
+        Shot.inject(dispatch, { method: 'get', url: '/', payload: body, timeout: 10 }, function (res) {
+
+            expect(res.statusCode).to.equal(503);
+            expect(res.payload).to.not.exist();
+            done();
+        });
+    });
+
+    it('clears timer when it doesnt timeout', function (done) {
+
+        var output = 'example.com:8080|/hello';
+        var dispatch = function (req, res) {
+
+            res.writeHead(200, { 'Content-Type': 'text/plain', 'Content-Length': output.length });
+            res.end('Scorpio Wins. Flawless Victory');
+        };
+
+        var body = 'Never fight an inanimate object';
+        Shot.inject(dispatch, { method: 'get', url: '/', payload: body, timeout: 5000 }, function (res) {
+
+            expect(res.statusCode).to.equal(200);
+            expect(res.payload).to.equal('Scorpio Wins. Flawless Victory');
+            done();
+        });
+    });
 });
 
 describe('writeHead()', function () {
