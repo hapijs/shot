@@ -554,7 +554,7 @@ describe('inject()', () => {
         });
     });
 
-    it('can handle a stream payload of utf8 strings', (done) => {
+    it('can handle a stream payload of utf-8 strings', (done) => {
 
         const dispatch = function (req, res) {
 
