@@ -6,6 +6,7 @@ const Util = require('util');
 const Stream = require('stream');
 const Fs = require('fs');
 const Zlib = require('zlib');
+
 const Lab = require('lab');
 const Shot = require('../lib');
 const Code = require('code');
@@ -17,9 +18,7 @@ const internals = {};
 
 // Test shortcuts
 
-const lab = exports.lab = Lab.script();
-const describe = lab.describe;
-const it = lab.it;
+const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;
 
 
