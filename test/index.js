@@ -24,6 +24,19 @@ const expect = Code.expect;
 
 describe('inject()', () => {
 
+    it('works when accessing req.socket properties', async () => {
+
+        const dispatch = function (req, res) {
+
+            req.socket.foo;
+            res.end('foo');
+        };
+
+        const res = await Shot.inject(dispatch, '/');
+
+        expect(res.payload).to.equal('foo');
+    });
+
     it('returns non-chunked payload', async () => {
 
         const output = 'example.com:8080|/hello';
