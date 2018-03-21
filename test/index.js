@@ -267,7 +267,7 @@ describe('inject()', () => {
 
             res.writeHead(200);
             res.write('a');
-            res.write(new Buffer('b'));
+            res.write(Buffer.from('b'));
             res.end();
         };
 
@@ -380,7 +380,7 @@ describe('inject()', () => {
             req.pipe(res);
         };
 
-        const res = await Shot.inject(dispatch, { method: 'post', url: '/test', payload: new Buffer('test!') });
+        const res = await Shot.inject(dispatch, { method: 'post', url: '/test', payload: Buffer.from('test!') });
         expect(res.payload).to.equal('test!');
     });
 
