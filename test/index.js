@@ -2,7 +2,6 @@
 
 // Load modules
 
-const Util = require('util');
 const Stream = require('stream');
 const Fs = require('fs');
 const Zlib = require('zlib');
@@ -681,19 +680,15 @@ describe('_read()', () => {
 
 internals.getTestStream = function (encoding) {
 
-    const Read = function () {
-
-        Stream.Readable.call(this);
-    };
-
-    Util.inherits(Read, Stream.Readable);
-
     const word = 'hi';
     let i = 0;
 
-    Read.prototype._read = function (size) {
+    const Read = class extends Stream.Readable {
 
-        this.push(word[i] ? word[i++] : null);
+        _read(size) {
+
+            this.push(word[i] ? word[i++] : null);
+        }
     };
 
     const stream = new Read();
