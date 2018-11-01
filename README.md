@@ -21,7 +21,7 @@ const Shot = require('shot');
 const internals = {};
 
 
-internals.main = function () {
+internals.main = async function () {
 
     const dispatch = function (req, res) {
 
@@ -32,10 +32,8 @@ internals.main = function () {
 
     const server = Http.createServer(dispatch);
 
-    Shot.inject(dispatch, { method: 'get', url: '/' }, (res) => {
-
-        console.log(res.payload);
-    });
+    const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
+    console.log(res.payload);
 };
 
 

@@ -1,6 +1,7 @@
 # API Reference
 
-### `Shot.inject(dispatchFunc, options, callback)`
+
+### `await Shot.inject(dispatchFunc, options)`
 
 Injects a fake request into an HTTP server.
 
@@ -21,17 +22,18 @@ Injects a fake request into an HTTP server.
     - `error` - whether the request will emit an `error` event. Defaults to `undefined`, meaning no `error` event will be emitted. If set to `true`, the emitted error will have a message of `'Simulated'`.
     - `close` - whether the request will emit a `close` event. Defaults to `undefined`, meaning no `close` event will be emitted.
   - `validate` - Optional flag to validate this options object. Defaults to `true`.
-- `callback` - the callback function using the signature `function (res)` where:
-  - `res` - a response object where:
-    - `raw` - an object containing the raw request and response objects where:
-      - `req` - the simulated request object.
-      - `res` - the simulated response object.
-    - `headers` - an object containing the response headers.
-    - `statusCode` - the HTTP status code.
-    - `statusMessage` - the HTTP status message.
-    - `payload` - the payload as a UTF-8 encoded string.
-    - `rawPayload` - the raw payload as a Buffer.
-    - `trailers` - an object containing the response trailers.
+
+Returns a response object where:
+- `raw` - an object containing the raw request and response objects where:
+  - `req` - the simulated request object.
+  - `res` - the simulated response object.
+- `headers` - an object containing the response headers.
+- `statusCode` - the HTTP status code.
+- `statusMessage` - the HTTP status message.
+- `payload` - the payload as a UTF-8 encoded string.
+- `rawPayload` - the raw payload as a Buffer.
+- `trailers` - an object containing the response trailers.
+
 
 ### `Shot.isInjection(obj)`
 

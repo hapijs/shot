@@ -11,15 +11,15 @@
     "test"
   ],
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=8.12.0"
   },
   "dependencies": {
-    "hoek": "5.x.x",
-    "joi": "13.x.x"
+    "hoek": "6.x.x",
+    "joi": "14.x.x"
   },
   "devDependencies": {
     "code": "5.x.x",
-    "lab": "15.x.x"
+    "lab": "17.x.x"
   },
   "scripts": {
     "test": "lab -a code -t 100 -L",
