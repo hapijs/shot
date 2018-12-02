@@ -1,13 +1,17 @@
 # API Reference
 
+## Shot
+
+- [`inject`](#await-shotinjectdispatchfunc-options)
+- [`isInjection`](#shotisinjectionobj)
 
 ### `await Shot.inject(dispatchFunc, options)`
 
 Injects a fake request into an HTTP server.
 
 - `dispatchFunc` - listener function. The same as you would pass to `Http.createServer` when making a node HTTP server. Has the signature `function (req, res)` where:
-    - `req` - a simulated request object. Inherits from `Stream.Readable`.
-    - `res` - a simulated response object. Inherits from node's `Http.ServerResponse`.
+  - `req` - a simulated request object. Inherits from `Stream.Readable`.
+  - `res` - a simulated response object. Inherits from node's `Http.ServerResponse`.
 - `options` - request options object where:
   - `url` - a string specifying the request URL.
   - `method` - a string specifying the HTTP request method, defaulting to `'GET'`.
@@ -24,6 +28,7 @@ Injects a fake request into an HTTP server.
   - `validate` - Optional flag to validate this options object. Defaults to `true`.
 
 Returns a response object where:
+
 - `raw` - an object containing the raw request and response objects where:
   - `req` - the simulated request object.
   - `res` - the simulated response object.
@@ -33,7 +38,6 @@ Returns a response object where:
 - `payload` - the payload as a UTF-8 encoded string.
 - `rawPayload` - the raw payload as a Buffer.
 - `trailers` - an object containing the response trailers.
-
 
 ### `Shot.isInjection(obj)`
 
