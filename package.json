@@ -1,5 +1,5 @@
 {
-  "name": "shot",
+  "name": "@commercial/shot",
   "description": "Injects a fake HTTP request/response into a node HTTP server",
   "version": "3.5.0",
   "repository": "git://github.com/hapijs/shot",
