@@ -1,21 +1,17 @@
 'use strict';
 
-// Load modules
-
-const Util = require('util');
-const Stream = require('stream');
 const Fs = require('fs');
+const Stream = require('stream');
+const Util = require('util');
 const Zlib = require('zlib');
+
+const Code = require('code');
 const Lab = require('lab');
 const Shot = require('../lib');
-const Code = require('code');
 
-// Declare internals
 
 const internals = {};
 
-
-// Test shortcuts
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
@@ -323,7 +319,7 @@ describe('inject()', () => {
 
             res.writeHead(200);
             res.write('a');
-            res.write(new Buffer('b'));
+            res.write(Buffer.from('b'));
             res.end();
         };
 
@@ -457,7 +453,7 @@ describe('inject()', () => {
             req.pipe(res);
         };
 
-        Shot.inject(dispatch, { method: 'post', url: '/test', payload: new Buffer('test!') }, (res) => {
+        Shot.inject(dispatch, { method: 'post', url: '/test', payload: Buffer.from('test!') }, (res) => {
 
             expect(res.payload).to.equal('test!');
             done();
