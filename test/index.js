@@ -1,21 +1,16 @@
 'use strict';
 
-// Load modules
-
 const Stream = require('stream');
 const Fs = require('fs');
 const Zlib = require('zlib');
 
-const Lab = require('lab');
-const Shot = require('../lib');
-const Code = require('code');
+const Lab = require('@hapi/lab');
+const Shot = require('..');
+const Code = require('@hapi/code');
 
-// Declare internals
 
 const internals = {};
 
-
-// Test shortcuts
 
 const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;
@@ -441,7 +436,7 @@ describe('inject()', () => {
             res.end(req.headers['content-length']);
         };
 
-        const res = await Shot.inject(dispatch, { method: 'post', url: '/test', payload: '', headers: { 'content-length': '10' } });
+        const res = await Shot.inject(dispatch, { method: 'post', url: '/test', payload: 'abcdefghi', headers: { 'content-length': '10' } });
         expect(res.payload).to.equal('10');
     });
 

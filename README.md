@@ -1,4 +1,4 @@
-![shot Logo](https://raw.github.com/hapijs/shot/master/images/shot.png)
+# shot
 
 Injects a fake HTTP request/response into a node HTTP server for simulating server logic, writing tests, or debugging. Does not use a socket
 connection so can be run against an inactive server (server not in listen mode).
@@ -10,13 +10,9 @@ Lead Maintainer: [Matt Harrison](https://github.com/mtharrison)
 ## Example
 
 ```javascript
-// Load modules
-
 const Http = require('http');
-const Shot = require('shot');
+const Shot = require('@hapi/shot');
 
-
-// Declare internals
 
 const internals = {};
 
