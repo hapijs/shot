@@ -1,10 +1,15 @@
 {
   "name": "@hapi/shot",
   "description": "Injects a fake HTTP request/response into a node HTTP server",
-  "version": "4.0.7",
+  "version": "4.1.0",
   "repository": "git://github.com/hapijs/shot",
   "main": "lib/index.js",
-  "keywords": ["utilities", "http", "debug", "test"],
+  "keywords": [
+    "utilities",
+    "http",
+    "debug",
+    "test"
+  ],
   "dependencies": {
     "@hapi/hoek": "6.x.x",
     "@hapi/joi": "15.x.x"
