@@ -1,11 +1,11 @@
+<a href="http://hapijs.com"><img src="https://github.com/hapijs/assets/blob/master/images/family.svg" width="180px" align="right" /></a>
+
 # shot
 
 Injects a fake HTTP request/response into a node HTTP server for simulating server logic, writing tests, or debugging. Does not use a socket
 connection so can be run against an inactive server (server not in listen mode).
 
 [![Build Status](https://secure.travis-ci.org/hapijs/shot.png)](http://travis-ci.org/hapijs/shot)
-
-Lead Maintainer: [Matt Harrison](https://github.com/mtharrison)
 
 ## Example
 
