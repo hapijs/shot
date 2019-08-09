@@ -1,5 +1,8 @@
 # API Reference
 
+- [`inject`](#shotinjectdispatchfunc-options-callback)
+- [`isInjection`](#shotisinjectionobj)
+
 ### `Shot.inject(dispatchFunc, options, callback)`
 
 Injects a fake request into an HTTP server.
