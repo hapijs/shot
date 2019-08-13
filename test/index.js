@@ -503,6 +503,35 @@ describe('writeHead()', () => {
         expect(res.statusMessage).to.equal(statusMessage);
         expect(res.payload).to.equal(reply);
     });
+
+    it('handles a null headers object', async () => {
+
+        const reply = 'Hello World';
+        const statusCode = 200;
+        const statusMessage = 'OK';
+        const dispatch = function (req, res) {
+
+            res.writeHead(statusCode, statusMessage, null);
+            res.end(reply);
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
+        expect(res.statusCode).to.equal(statusCode);
+        expect(res.statusMessage).to.equal(statusMessage);
+        expect(res.payload).to.equal(reply);
+    });
+
+    it('handles falsy header names', async () => {
+
+        const dispatch = function (req, res) {
+
+            res.writeHead(200, 'OK', { '': 'foo' });
+            res.end('Hello World');
+        };
+
+        const promise = Shot.inject(dispatch, { method: 'get', url: '/' });
+        await expect(promise).to.reject(/must be a valid HTTP token/i);
+    });
 });
 
 describe('_read()', () => {
