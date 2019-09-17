@@ -1,6 +1,6 @@
 <a href="http://hapijs.com"><img src="https://raw.githubusercontent.com/hapijs/assets/master/images/family.png" width="180px" align="right" /></a>
 
-# shot
+# @hapi/shot
 
 Injects a fake HTTP request/response into a node HTTP server for simulating server logic, writing tests, or debugging. Does not use a socket
 connection so can be run against an inactive server (server not in listen mode).
