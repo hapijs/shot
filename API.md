@@ -1,4 +1,4 @@
-# API Reference
+## shot
 
 - [`inject`](#shotinjectdispatchfunc-options-callback)
 - [`isInjection`](#shotisinjectionobj)
