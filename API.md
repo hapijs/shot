@@ -1,6 +1,5 @@
-# API Reference
 
-## Shot
+## shot
 
 - [`inject`](#await-shotinjectdispatchfunc-options)
 - [`isInjection`](#shotisinjectionobj)
