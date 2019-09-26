@@ -1,7 +1,3 @@
-## shot
-
-- [`inject`](#shotinjectdispatchfunc-options-callback)
-- [`isInjection`](#shotisinjectionobj)
 
 ### `Shot.inject(dispatchFunc, options, callback)`
 
