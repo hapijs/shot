@@ -1,9 +1,4 @@
 
-## shot
-
-- [`inject`](#await-shotinjectdispatchfunc-options)
-- [`isInjection`](#shotisinjectionobj)
-
 ### `await Shot.inject(dispatchFunc, options)`
 
 Injects a fake request into an HTTP server.
