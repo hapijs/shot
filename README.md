@@ -1,43 +1,16 @@
-<a href="http://hapijs.com"><img src="https://raw.githubusercontent.com/hapijs/assets/master/images/family.png" width="180px" align="right" /></a>
+<a href="https://hapi.dev"><img src="https://raw.githubusercontent.com/hapijs/assets/master/images/family.png" width="180px" align="right" /></a>
 
 # @hapi/shot
 
-Injects a fake HTTP request/response into a node HTTP server for simulating server logic, writing tests, or debugging. Does not use a socket
-connection so can be run against an inactive server (server not in listen mode).
+#### Injects a fake HTTP request/response into your node server logic.
 
-[![Build Status](https://secure.travis-ci.org/hapijs/shot.png)](http://travis-ci.org/hapijs/shot)
+**shot** is part of the **hapi** ecosystem and was designed to work seamlessly with the [hapi web framework](https://hapi.dev) and its other components (but works great on its own or with other frameworks). If you are using a different web framework and find this module useful, check out [hapi](https://hapi.dev) – they work even better together.
 
-## Example
+### Visit the [hapi.dev](https://hapi.dev) Developer Portal for tutorials, documentation, and support
 
-```javascript
-const Http = require('http');
-const Shot = require('@hapi/shot');
+## Useful resources
 
-
-const internals = {};
-
-
-internals.main = async function () {
-
-    const dispatch = function (req, res) {
-
-        const reply = 'Hello World';
-        res.writeHead(200, { 'Content-Type': 'text/plain', 'Content-Length': reply.length });
-        res.end(reply);
-    };
-
-    const server = Http.createServer(dispatch);
-
-    const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
-    console.log(res.payload);
-};
-
-
-internals.main();
-```
-
-Note how `server.listen` is never called.
-
-## API
-
-See the [API Reference](API.md)
+- [Documentation and API](https://hapi.dev/family/shot/)
+- [Versions status](https://hapi.dev/resources/status/#shot)
+- [Project policies](https://hapi.dev/policies/)
+- [Free and commercial support options](https://hapi.dev/support/)
