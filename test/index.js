@@ -20,14 +20,14 @@ describe('inject()', () => {
 
     it('returns non-chunked payload', async () => {
 
-        const output = 'example.com:8080|/hello';
+        const output = 'http://example.com:8080/hello';
 
         const dispatch = function (req, res) {
 
             res.statusMessage = 'Super';
             res.setHeader('x-extra', 'hello');
             res.writeHead(200, { 'Content-Type': 'text/plain', 'Content-Length': output.length });
-            res.end(req.headers.host + '|' + req.url);
+            res.end(req.url.toString());
         };
 
         const res = await Shot.inject(dispatch, 'http://example.com:8080/hello');
@@ -42,7 +42,7 @@ describe('inject()', () => {
             'content-length': output.length
         });
         expect(res.payload).to.equal(output);
-        expect(res.rawPayload.toString()).to.equal('example.com:8080|/hello');
+        expect(res.rawPayload.toString()).to.equal('http://example.com:8080/hello');
     });
 
     it('returns single buffer payload', async () => {
@@ -50,15 +50,15 @@ describe('inject()', () => {
         const dispatch = function (req, res) {
 
             res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end(req.headers.host + '|' + req.url);
+            res.end(req.url.toString());
         };
 
         const res = await Shot.inject(dispatch, { url: 'http://example.com:8080/hello' });
         expect(res.headers.date).to.exist();
         expect(res.headers.connection).to.exist();
         expect(res.headers['transfer-encoding']).to.equal('chunked');
-        expect(res.payload).to.equal('example.com:8080|/hello');
-        expect(res.rawPayload.toString()).to.equal('example.com:8080|/hello');
+        expect(res.payload).to.equal('http://example.com:8080/hello');
+        expect(res.rawPayload.toString()).to.equal('http://example.com:8080/hello');
     });
 
     it('passes headers', async () => {
@@ -169,14 +169,28 @@ describe('inject()', () => {
         expect(res.payload).to.equal('example.com:443');
     });
 
+    it('includes URL hashes', async () => {
+
+        const url = 'http://example.com/hello#hapi';
+
+        const dispatch = function (req, res) {
+
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.end(req.url.toString());
+        };
+
+        const res = await Shot.inject(dispatch, { url });
+        expect(res.payload).to.equal(url);
+    });
+
     it('optionally accepts an object as url', async () => {
 
-        const output = 'example.com:8080|/hello?test=1234';
+        const output = 'http://example.com:8080/hello?test=1234';
 
         const dispatch = function (req, res) {
 
             res.writeHead(200, { 'Content-Type': 'text/plain', 'Content-Length': output.length });
-            res.end(req.headers.host + '|' + req.url);
+            res.end(req.url.toString());
         };
 
         const url = {
