@@ -613,6 +613,38 @@ describe('writeHead()', () => {
             done();
         });
     });
+
+    it('handles a null headers object', (done) => {
+
+        const reply = 'Hello World';
+        const statusCode = 200;
+        const statusMessage = 'OK';
+        const dispatch = function (req, res) {
+
+            res.writeHead(statusCode, statusMessage, null);
+            res.end(reply);
+        };
+
+        Shot.inject(dispatch, { method: 'get', url: '/' }, (res) => {
+
+            expect(res.statusCode).to.equal(statusCode);
+            expect(res.statusMessage).to.equal(statusMessage);
+            expect(res.payload).to.equal(reply);
+            done();
+        });
+    });
+
+    it('handles falsy header names', (done) => {
+
+        const dispatch = function (req, res) {
+
+            res.writeHead(200, 'OK', { '': 'foo' });
+            res.end('Hello World');
+        };
+
+        expect(() => Shot.inject(dispatch, { method: 'get', url: '/' }, (res) => { })).to.throw(/must be a valid HTTP token/i);
+        done();
+    });
 });
 
 describe('_read()', () => {
@@ -781,7 +813,7 @@ describe('_read()', () => {
 
         expect(() => {
 
-            Shot.inject({}, {}, (res) => {});
+            Shot.inject({}, {}, (res) => { });
         }).to.throw('Invalid dispatch function');
 
         done();
@@ -790,7 +822,7 @@ describe('_read()', () => {
     it('errors for missing url', (done) => {
 
         try {
-            Shot.inject((req, res) => {}, {}, (res) => {});
+            Shot.inject((req, res) => { }, {}, (res) => { });
         }
         catch (err) {
             expect(err).to.exist();
@@ -802,7 +834,7 @@ describe('_read()', () => {
     it('errors for an incorrect simulation object', (done) => {
 
         try {
-            Shot.inject((req, res) => {}, { url: '/', simulate: 'sample string' }, (res) => {});
+            Shot.inject((req, res) => { }, { url: '/', simulate: 'sample string' }, (res) => { });
         }
         catch (err) {
             expect(err).to.exist();
@@ -824,7 +856,7 @@ describe('_read()', () => {
     it('errors for an incorrect simulation object values', (done) => {
 
         try {
-            Shot.inject((req, res) => {}, { url: '/', simulate: { end: 'wrong input' } }, (res) => {});
+            Shot.inject((req, res) => { }, { url: '/', simulate: { end: 'wrong input' } }, (res) => { });
         }
         catch (err) {
             expect(err).to.exist();
