@@ -1,8 +1,11 @@
 {
-  "name": "@hapi/shot",
+  "name": "@commercial/shot",
   "description": "Injects a fake HTTP request/response into a node HTTP server",
   "version": "5.0.0",
   "repository": "git://github.com/hapijs/shot",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "main": "lib/index.js",
   "files": [
     "lib"
@@ -14,8 +17,8 @@
     "test"
   ],
   "dependencies": {
-    "@hapi/hoek": "9.x.x",
-    "@hapi/joi": "17.x.x"
+    "@commercial/hoek": "9.x.x",
+    "joi": "17.x.x"
   },
   "devDependencies": {
     "@hapi/code": "8.x.x",
@@ -25,5 +28,5 @@
     "test": "lab -a @hapi/code -t 100 -L",
     "test-cov-html": "lab -a @hapi/code -r html -o coverage.html -L"
   },
-  "license": "BSD-3-Clause"
+  "license": "SEE LICENSE IN LICENSE.md"
 }
