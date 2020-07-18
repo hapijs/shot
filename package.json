@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@hapi/hoek": "9.x.x",
-    "@hapi/joi": "17.x.x"
+    "@hapi/validate": "1.x.x"
   },
   "devDependencies": {
     "@hapi/code": "8.x.x",
