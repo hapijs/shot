@@ -71,6 +71,8 @@ Returns a response object where:
 - `rawPayload` - the raw payload as a Buffer.
 - `trailers` - an object containing the response trailers.
 
-### `Shot.isInjection(obj)`
+### `Shot.isInjection(obj, loose)`
 
 Checks if given object `obj` is a Shot `Request` object.
+
+- `loose` - when `true`, relaxes internal symbol check to allow detection across different versions of Shot.

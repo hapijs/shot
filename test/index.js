@@ -325,8 +325,8 @@ describe('inject()', () => {
 
         const dispatch = function (req, res) {
 
-            expect(AnotherShot.isInjection(req)).to.equal(true);
-            expect(AnotherShot.isInjection(res)).to.equal(true);
+            expect(AnotherShot.isInjection(req, true)).to.equal(true);
+            expect(AnotherShot.isInjection(res, true)).to.equal(true);
 
             res.writeHead(200, { 'Content-Length': 0 });
             res.end();
