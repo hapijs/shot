@@ -308,6 +308,33 @@ describe('inject()', () => {
         await Shot.inject(dispatch, { method: 'get', url: '/' });
     });
 
+    it('identifies injection object across multiple modules', async () => {
+
+        const requireUncached = (module) => {
+
+            delete require.cache[require.resolve(module)];
+            return require(module);
+        };
+
+        const AnotherShot = (() => {
+
+            requireUncached('../lib/symbols');
+            const _AnotherShot = requireUncached('..');
+            return _AnotherShot;
+        })();
+
+        const dispatch = function (req, res) {
+
+            expect(AnotherShot.isInjection(req)).to.equal(true);
+            expect(AnotherShot.isInjection(res)).to.equal(true);
+
+            res.writeHead(200, { 'Content-Length': 0 });
+            res.end();
+        };
+
+        await Shot.inject(dispatch, { method: 'get', url: '/' });
+    });
+
     it('pipes response', async () => {
 
         let finished = false;
