@@ -483,6 +483,30 @@ describe('inject()', () => {
         const res = await Shot.inject(dispatch, { method: 'post', url: '/', payload: internals.getTestStream(), headers });
         expect(res.payload).to.equal('100');
     });
+
+    it('iterates over payload', async () => {
+
+        const dispatch = async function (req, res) {
+
+            let output = '';
+
+            for await (const chunk of req) {
+                output += chunk.toString();
+            }
+
+            res.writeHead(200, { 'Content-Length': output.length });
+            res.end(output);
+            req.destroy();
+        };
+
+        const body = Buffer.from('something special just for you');
+        const res = await Shot.inject(dispatch, {
+            method: 'get',
+            url: '/',
+            payload: body
+        });
+        expect(res.payload.toString()).to.equal(body.toString());
+    });
 });
 
 describe('writeHead()', () => {
