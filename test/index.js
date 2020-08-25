@@ -640,7 +640,7 @@ describe('_read()', () => {
         expect(end).to.equal(false);
     });
 
-    it('simulates close', async () => {
+    it('simulates close (end = true)', async () => {
 
         const dispatch = function (req, res) {
 
@@ -661,7 +661,32 @@ describe('_read()', () => {
         };
 
         const body = 'something special just for you';
-        const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { close: true } });
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { close: true, end: true } });
+        expect(res.payload).to.equal('close');
+    });
+
+    it('simulates close (end = false)', async () => {
+
+        const dispatch = function (req, res) {
+
+            let buffer = '';
+            req.on('readable', () => {
+
+                buffer = buffer + (req.read() || '');
+            });
+
+            req.on('close', () => {
+
+                res.writeHead(200, { 'Content-Length': 0 });
+                res.end('close');
+            });
+
+            req.on('end', () => {
+            });
+        };
+
+        const body = 'something special just for you';
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { close: true, end: false } });
         expect(res.payload).to.equal('close');
     });
 
