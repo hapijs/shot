@@ -562,25 +562,6 @@ describe('_read()', () => {
         expect(res.payload).to.equal(body);
     });
 
-    it('supports async iteration', async () => {
-
-        const dispatch = async function (req, res) {
-
-            let buffer = '';
-            for await (const chunk of req) {
-                buffer = buffer + chunk.toString();
-            }
-
-            res.writeHead(200, { 'Content-Length': 0 });
-            res.end(buffer);
-            req.destroy();
-        };
-
-        const body = 'something special just for you';
-        const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body });
-        expect(res.payload).to.equal(body);
-    });
-
     it('simulates split', async () => {
 
         const dispatch = function (req, res) {
