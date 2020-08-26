@@ -4,12 +4,22 @@ const Stream = require('stream');
 const Fs = require('fs');
 const Zlib = require('zlib');
 
+const Hoek = require('@hapi/hoek');
 const Lab = require('@hapi/lab');
 const Shot = require('..');
 const Code = require('@hapi/code');
 
 
 const internals = {};
+
+
+internals.trackStreamLifetime = function (stream, list) {
+
+    const events = ['close', 'error', 'end', 'finish'];
+    for (const event of events) {
+        stream.on(event, () => list.push(event));
+    }
+};
 
 
 const { describe, it } = exports.lab = Lab.script();
@@ -538,6 +548,7 @@ describe('_read()', () => {
 
     it('plays payload', async () => {
 
+        const events = [];
         const dispatch = function (req, res) {
 
             let buffer = '';
@@ -546,24 +557,25 @@ describe('_read()', () => {
                 buffer = buffer + (req.read() || '');
             });
 
-            req.on('close', () => {
-            });
-
             req.on('end', () => {
 
                 res.writeHead(200, { 'Content-Length': 0 });
                 res.end(buffer);
                 req.destroy();
             });
+
+            internals.trackStreamLifetime(req, events);
         };
 
         const body = 'something special just for you';
         const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body });
         expect(res.payload).to.equal(body);
+        expect(events).to.equal(['end']);
     });
 
     it('simulates split', async () => {
 
+        const events = [];
         const dispatch = function (req, res) {
 
             let buffer = '';
@@ -572,76 +584,99 @@ describe('_read()', () => {
                 buffer = buffer + (req.read() || '');
             });
 
-            req.on('close', () => {
-            });
-
             req.on('end', () => {
 
                 res.writeHead(200, { 'Content-Length': 0 });
                 res.end(buffer);
                 req.destroy();
             });
+
+            internals.trackStreamLifetime(req, events);
         };
 
         const body = 'something special just for you';
         const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { split: true } });
         expect(res.payload).to.equal(body);
+        expect(events).to.equal(['end']);
     });
 
-    it('simulates error', async () => {
+    it('simulates error (close = false)', async () => {
 
+        const events = [];
         const dispatch = function (req, res) {
 
-            req.on('readable', () => { });
+            req.on('readable', Hoek.ignore);
 
             req.on('error', () => {
 
                 res.writeHead(200, { 'Content-Length': 0 });
                 res.end('error');
             });
+
+            internals.trackStreamLifetime(req, events);
         };
 
         const body = 'something special just for you';
-        const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { error: true } });
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { error: true, close: false } });
         expect(res.payload).to.equal('error');
+
+        await Hoek.wait(10);       // Wait for any trailing 'close' emit
+        expect(events).to.equal(['error']);
+    });
+
+    it('simulates error (close = true)', async () => {
+
+        const events = [];
+        const dispatch = function (req, res) {
+
+            req.on('readable', Hoek.ignore);
+
+            req.on('close', () => {
+
+                res.writeHead(200, { 'Content-Length': 0 });
+                res.end('close');
+            });
+
+            internals.trackStreamLifetime(req, events);
+        };
+
+        const body = 'something special just for you';
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { error: true, close: true } });
+        expect(res.payload).to.equal('close');
+        expect(events).to.equal(['error', 'close']);
     });
 
     it('simulates no end without payload', async () => {
 
-        let end = false;
+        const events = [];
         const dispatch = function (req, res) {
 
             req.resume();
-            req.on('end', () => {
-
-                end = true;
-            });
+            internals.trackStreamLifetime(req, events);
         };
 
         Shot.inject(dispatch, { method: 'get', url: '/', simulate: { end: false } });       // Stuck
         await internals.wait(10);
-        expect(end).to.equal(false);
+        expect(events).to.equal([]);
     });
 
     it('simulates no end with payload', async () => {
 
-        let end = false;
+        const events = [];
         const dispatch = function (req, res) {
 
             req.resume();
-            req.on('end', () => {
-
-                end = true;
-            });
+            internals.trackStreamLifetime(req, events);
         };
 
         Shot.inject(dispatch, { method: 'get', url: '/', payload: '1234567', simulate: { end: false } });       // Stuck
         await internals.wait(10);
-        expect(end).to.equal(false);
+        expect(events).to.equal([]);
     });
 
     it('simulates close (end = true)', async () => {
 
+        const events = [];
         const dispatch = function (req, res) {
 
             let buffer = '';
@@ -656,17 +691,18 @@ describe('_read()', () => {
                 res.end('close');
             });
 
-            req.on('end', () => {
-            });
+            internals.trackStreamLifetime(req, events);
         };
 
         const body = 'something special just for you';
         const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { close: true, end: true } });
         expect(res.payload).to.equal('close');
+        expect(events).to.equal(['end', 'close']);
     });
 
     it('simulates close (end = false)', async () => {
 
+        const events = [];
         const dispatch = function (req, res) {
 
             let buffer = '';
@@ -681,13 +717,13 @@ describe('_read()', () => {
                 res.end('close');
             });
 
-            req.on('end', () => {
-            });
+            internals.trackStreamLifetime(req, events);
         };
 
         const body = 'something special just for you';
         const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { close: true, end: false } });
         expect(res.payload).to.equal('close');
+        expect(events).to.equal(['close']);
     });
 
     it('errors for invalid input options', async () => {
