@@ -13,11 +13,11 @@ const Code = require('@hapi/code');
 const internals = {};
 
 
-internals.trackStreamLifetime = function (stream, list) {
+internals.trackStreamLifetime = function (stream, list, tag) {
 
     const events = ['close', 'error', 'end', 'finish'];
     for (const event of events) {
-        stream.on(event, () => list.push(event));
+        stream.on(event, () => list.push(tag ? `${event} (${tag})` : event));
     }
 };
 
@@ -680,13 +680,14 @@ describe('_read()', () => {
                 res.end('close');
             });
 
-            internals.trackStreamLifetime(req, events);
+            internals.trackStreamLifetime(req, events, 'req');
+            internals.trackStreamLifetime(res, events, 'res');
         };
 
         const body = 'something special just for you';
         const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { error: true, close: true } });
         expect(res.payload).to.equal('close');
-        expect(events).to.equal(['error', 'close']);
+        expect(events).to.equal(['error (req)', 'finish (res)', 'close (req)']);
     });
 
     it('simulates no end without payload', async () => {
@@ -734,13 +735,14 @@ describe('_read()', () => {
                 res.end('close');
             });
 
-            internals.trackStreamLifetime(req, events);
+            internals.trackStreamLifetime(req, events, 'req');
+            internals.trackStreamLifetime(res, events, 'res');
         };
 
         const body = 'something special just for you';
         const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { close: true, end: true } });
         expect(res.payload).to.equal('close');
-        expect(events).to.equal(['end', 'close']);
+        expect(events).to.equal(['end (req)', 'finish (res)', 'close (req)']);
     });
 
     it('simulates close (end = false)', async () => {
@@ -760,13 +762,14 @@ describe('_read()', () => {
                 res.end('close');
             });
 
-            internals.trackStreamLifetime(req, events);
+            internals.trackStreamLifetime(req, events, 'req');
+            internals.trackStreamLifetime(res, events, 'res');
         };
 
         const body = 'something special just for you';
         const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { close: true, end: false } });
         expect(res.payload).to.equal('close');
-        expect(events).to.equal(['close']);
+        expect(events).to.equal(['close (res)', 'finish (res)', 'close (req)']);
     });
 
     it('errors for invalid input options', async () => {
