@@ -97,6 +97,22 @@ describe('inject()', () => {
         expect(res.payload).to.equal('1.2.3.4');
     });
 
+    it('recreates request socket interface', async () => {
+
+        const dispatch = function (req, res) {
+
+            expect(req.socket.on).to.be.a.function();
+            expect(req.socket.once).to.be.a.function();
+            expect(req.socket.end).to.be.a.function();
+            expect(req.socket.setTimeout).to.be.a.function();
+
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.end();
+        };
+
+        await Shot.inject(dispatch, { method: 'get', url: 'http://example.com:8080/hello' });
+    });
+
     it('passes localhost as default remote address', async () => {
 
         const dispatch = function (req, res) {
