@@ -53,6 +53,10 @@ expect.error(await Shot.inject(plain, '/'));
 
 await Shot.inject((req: Shot.MaybeInjectedRequest, res) => {
 
+    expect.type<Function>(req.socket.once);
+    expect.type<Function>(req.socket.end);
+    expect.type<Function>(req.socket.setTimeout);
+    expect.type<string | undefined>(req.socket.remoteAddress);
     expect.type<boolean>(Shot.isInjection(req));
     expect.type<boolean>(Shot.isInjection(res));
 

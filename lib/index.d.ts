@@ -1,4 +1,4 @@
-
+import { EventEmitter } from 'events';
 import {
     IncomingHttpHeaders,
     IncomingMessage,
@@ -8,15 +8,19 @@ import {
 import { Readable, Stream } from 'stream';
 import { UrlObject } from 'url';
 
+interface MockSocket extends EventEmitter {
+    readonly remoteAddress: string;
+    end(): void;
+    setTimeout(): void;
+}
 
 export interface InjectedRequest extends Readonly<Readable> {
     readonly httpVersion: '1.1';
     readonly method: string;
     readonly url: string;
     readonly headers: Readonly<IncomingHttpHeaders>;
-    readonly connection: {
-        readonly remoteAddress: string;
-    };
+    readonly socket: MockSocket;
+    readonly connection: MockSocket;
 }
 
 export type MaybeInjectedRequest = InjectedRequest | IncomingMessage;
@@ -79,7 +83,7 @@ export interface RequestOptions {
 
     /**
      * The HTTP request method.
-     * 
+     *
      * @default 'GET'
      */
     method?: string;
