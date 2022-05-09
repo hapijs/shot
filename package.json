@@ -1,7 +1,7 @@
 {
   "name": "@hapi/shot",
   "description": "Injects a fake HTTP request/response into a node HTTP server",
-  "version": "6.0.0-beta.0",
+  "version": "6.0.0-beta.1",
   "repository": "git://github.com/hapijs/shot",
   "main": "lib/index.js",
   "files": [
@@ -19,13 +19,13 @@
     ]
   },
   "dependencies": {
-    "@hapi/hoek": "9.x.x",
-    "@hapi/validate": "1.x.x"
+    "@hapi/hoek": "^10.0.0",
+    "@hapi/validate": "^2.0.0"
   },
   "devDependencies": {
-    "@hapi/code": "9.0.0-beta.0",
+    "@hapi/code": "^9.0.0",
     "@hapi/eslint-plugin": "*",
-    "@hapi/lab": "25.0.0-beta.0"
+    "@hapi/lab": "^25.0.1"
   },
   "scripts": {
     "test": "lab -a @hapi/code -t 100 -L",
