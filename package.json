@@ -1,5 +1,5 @@
 {
-  "name": "@commercial/shot",
+  "name": "shot",
   "description": "Injects a fake HTTP request/response into a node HTTP server",
   "version": "3.5.1",
   "repository": "git://github.com/hapijs/shot",
@@ -14,8 +14,8 @@
     "test"
   ],
   "dependencies": {
-    "@commercial/hoek": "4.x.x",
-    "@commercial/joi": "12.x.x"
+    "hoek": "4.x.x",
+    "joi": "12.x.x"
   },
   "devDependencies": {
     "code": "4.x.x",
