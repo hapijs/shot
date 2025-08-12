@@ -794,12 +794,15 @@ describe('_read()', () => {
 
     it('errors for invalid input options', async () => {
 
-        await expect(Shot.inject({}, {})).to.reject('Invalid dispatch function');
+        await expect(Shot.inject()).to.reject('Invalid or missing dispatch function');
+        await expect(Shot.inject({}, {})).to.reject('Invalid or missing dispatch function');
+        await expect(Shot.inject(Hoek.ignore)).to.reject(/^Invalid options:/);
+        await expect(Shot.inject(Hoek.ignore, true)).to.reject(/^Invalid options:/);
     });
 
     it('errors for missing url', async () => {
 
-        const err = await expect(Shot.inject((req, res) => { }, {})).to.reject();
+        const err = await expect(Shot.inject((req, res) => { }, {})).to.reject(/^Invalid options:/);
         expect(err.isJoi).to.be.true();
     });
 
