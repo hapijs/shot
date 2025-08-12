@@ -537,6 +537,44 @@ describe('inject()', () => {
         });
         expect(res.payload.toString()).to.equal(body.toString());
     });
+
+    it('errors for invalid input options', async () => {
+
+        await expect(Shot.inject()).to.reject('Invalid or missing dispatch function');
+        await expect(Shot.inject({}, {})).to.reject('Invalid or missing dispatch function');
+        await expect(Shot.inject(Hoek.ignore)).to.reject(/^Invalid options:/);
+        await expect(Shot.inject(Hoek.ignore, true)).to.reject(/^Invalid options:/);
+    });
+
+    it('errors for missing url', async () => {
+
+        const err = await expect(Shot.inject((req, res) => { }, {})).to.reject(/^Invalid options:/);
+        expect(err.isJoi).to.be.true();
+    });
+
+    it('errors for an incorrect simulation object', async () => {
+
+        const err = await expect(Shot.inject((req, res) => { }, { url: '/', simulate: 'sample string' })).to.reject();
+        expect(err.isJoi).to.be.true();
+    });
+
+    it('ignores incorrect simulation object', async () => {
+
+        const dispatch = function (req, res) {
+
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.end(req.headers.super);
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: 'http://example.com:8080/hello', headers: { Super: 'duper' }, simulate: 'sample string', validate: false });
+        expect(res.payload).to.equal('duper');
+    });
+
+    it('errors for an incorrect simulation object values', async () => {
+
+        const err = await expect(Shot.inject((req, res) => { }, { url: '/', simulate: { end: 'wrong input' } })).to.reject();
+        expect(err.isJoi).to.be.true();
+    });
 });
 
 describe('writeHead()', () => {
@@ -790,44 +828,6 @@ describe('_read()', () => {
         const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { close: true, end: false } });
         expect(res.payload).to.equal('close');
         expect(events).to.equal(['finish (res)', 'close (req)', 'close (res)']);
-    });
-
-    it('errors for invalid input options', async () => {
-
-        await expect(Shot.inject()).to.reject('Invalid or missing dispatch function');
-        await expect(Shot.inject({}, {})).to.reject('Invalid or missing dispatch function');
-        await expect(Shot.inject(Hoek.ignore)).to.reject(/^Invalid options:/);
-        await expect(Shot.inject(Hoek.ignore, true)).to.reject(/^Invalid options:/);
-    });
-
-    it('errors for missing url', async () => {
-
-        const err = await expect(Shot.inject((req, res) => { }, {})).to.reject(/^Invalid options:/);
-        expect(err.isJoi).to.be.true();
-    });
-
-    it('errors for an incorrect simulation object', async () => {
-
-        const err = await expect(Shot.inject((req, res) => { }, { url: '/', simulate: 'sample string' })).to.reject();
-        expect(err.isJoi).to.be.true();
-    });
-
-    it('ignores incorrect simulation object', async () => {
-
-        const dispatch = function (req, res) {
-
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end(req.headers.super);
-        };
-
-        const res = await Shot.inject(dispatch, { method: 'get', url: 'http://example.com:8080/hello', headers: { Super: 'duper' }, simulate: 'sample string', validate: false });
-        expect(res.payload).to.equal('duper');
-    });
-
-    it('errors for an incorrect simulation object values', async () => {
-
-        const err = await expect(Shot.inject((req, res) => { }, { url: '/', simulate: { end: 'wrong input' } })).to.reject();
-        expect(err.isJoi).to.be.true();
     });
 });
 
