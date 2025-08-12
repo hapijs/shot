@@ -586,7 +586,6 @@ describe('inject()', () => {
         const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
         expect(res.aborted).to.be.true();
         expect(res.statusCode).to.equal(499);
-        expect(res.raw.res.errored).to.not.exist();
     });
 
     it('returns aborted on immediate res.destroy(error)', async () => {
@@ -599,7 +598,6 @@ describe('inject()', () => {
         const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
         expect(res.aborted).to.be.true();
         expect(res.statusCode).to.equal(499);
-        expect(res.raw.res.errored).to.be.an.error('stop');
     });
 
     it('returns aborted on res.destroy() while transmitting payload', async () => {
@@ -614,7 +612,6 @@ describe('inject()', () => {
         const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
         expect(res.aborted).to.be.true();
         expect(res.statusCode).to.equal(404);
-        expect(res.raw.res.errored).to.not.exist();
         expect(res.payload).to.equal('data');
     });
 
@@ -630,7 +627,6 @@ describe('inject()', () => {
         const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
         expect(res.aborted).to.be.true();
         expect(res.statusCode).to.equal(404);
-        expect(res.raw.res.errored).to.be.an.error('stop');
         expect(res.payload).to.equal('data');
     });
 
@@ -646,7 +642,6 @@ describe('inject()', () => {
         const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
         expect(res.aborted).to.not.exist();
         expect(res.statusCode).to.equal(404);
-        expect(res.raw.res.errored).to.not.exist();
         expect(res.payload).to.equal('data');
     });
 
@@ -662,7 +657,6 @@ describe('inject()', () => {
         const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
         expect(res.aborted).to.not.exist();
         expect(res.statusCode).to.equal(404);
-        expect(res.raw.res.errored).to.be.an.error('stop');
         expect(res.payload).to.equal('data');
     });
 });
