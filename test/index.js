@@ -575,6 +575,96 @@ describe('inject()', () => {
         const err = await expect(Shot.inject((req, res) => { }, { url: '/', simulate: { end: 'wrong input' } })).to.reject();
         expect(err.isJoi).to.be.true();
     });
+
+    it('returns aborted on immediate res.destroy()', async () => {
+
+        const dispatch = function (req, res) {
+
+            res.destroy();
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
+        expect(res.aborted).to.be.true();
+        expect(res.statusCode).to.equal(499);
+        expect(res.raw.res.errored).to.not.exist();
+    });
+
+    it('returns aborted on immediate res.destroy(error)', async () => {
+
+        const dispatch = function (req, res) {
+
+            res.destroy(new Error('stop'));
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
+        expect(res.aborted).to.be.true();
+        expect(res.statusCode).to.equal(499);
+        expect(res.raw.res.errored).to.be.an.error('stop');
+    });
+
+    it('returns aborted on res.destroy() while transmitting payload', async () => {
+
+        const dispatch = function (req, res) {
+
+            res.writeHead(404);
+            res.write('data');
+            setTimeout(() => res.destroy(), 1);
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
+        expect(res.aborted).to.be.true();
+        expect(res.statusCode).to.equal(404);
+        expect(res.raw.res.errored).to.not.exist();
+        expect(res.payload).to.equal('data');
+    });
+
+    it('returns aborted on res.destroy(error) while transmitting payload', async () => {
+
+        const dispatch = function (req, res) {
+
+            res.writeHead(404);
+            res.write('data');
+            setTimeout(() => res.destroy(new Error('stop')), 1);
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
+        expect(res.aborted).to.be.true();
+        expect(res.statusCode).to.equal(404);
+        expect(res.raw.res.errored).to.be.an.error('stop');
+        expect(res.payload).to.equal('data');
+    });
+
+    it('handles res.destroy() after transmitting payload', async () => {
+
+        const dispatch = function (req, res) {
+
+            res.writeHead(404);
+            res.end('data');
+            res.destroy();
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
+        expect(res.aborted).to.not.exist();
+        expect(res.statusCode).to.equal(404);
+        expect(res.raw.res.errored).to.not.exist();
+        expect(res.payload).to.equal('data');
+    });
+
+    it('handles res.destroy(error) after transmitting payload', async () => {
+
+        const dispatch = function (req, res) {
+
+            res.writeHead(404);
+            res.end('data');
+            res.destroy(new Error('stop'));
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
+        expect(res.aborted).to.not.exist();
+        expect(res.statusCode).to.equal(404);
+        expect(res.raw.res.errored).to.be.an.error('stop');
+        expect(res.payload).to.equal('data');
+    });
 });
 
 describe('writeHead()', () => {

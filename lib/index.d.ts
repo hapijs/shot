@@ -47,7 +47,7 @@ export interface ResponseObject {
     headers: OutgoingHttpHeaders;
 
     /**
-     * The HTTP status code.
+     * The HTTP status code. If response is aborted before headers are sent, the code is `499`.
      */
     statusCode: number;
 
@@ -70,6 +70,11 @@ export interface ResponseObject {
      * An object containing the response trailers
      */
     trailers: NodeJS.Dict<string>;
+
+    /**
+     * A boolean which is `true` for aborted, ie. not fully transmitted, responses.
+     */
+    aborted?: true;
 }
 
 type PartialURL = Pick<UrlObject, 'protocol' | 'hostname' | 'port' | 'query'> & { pathname: string };

@@ -65,11 +65,12 @@ Returns a response object where:
   - `req` - the simulated request object.
   - `res` - the simulated response object.
 - `headers` - an object containing the response headers.
-- `statusCode` - the HTTP status code.
+- `statusCode` - the HTTP status code. If response is aborted before headers are sent, the code is `499`.
 - `statusMessage` - the HTTP status message.
 - `payload` - the payload as a UTF-8 encoded string.
 - `rawPayload` - the raw payload as a Buffer.
 - `trailers` - an object containing the response trailers.
+- `aborted` - optional property which is `true` for aborted, ie. not fully transmitted, responses.
 
 ### `Shot.isInjection(obj)`
 
