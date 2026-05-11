@@ -514,6 +514,24 @@ describe('inject()', () => {
         expect(res.payload).to.equal('100');
     });
 
+    it('rejects on stream payload errors', async () => {
+
+        const dispatch = function (req, res) {
+
+            internals.readStream(req, (buff) => {
+
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.end(buff);
+            });
+        };
+
+        const payload = internals.getTestStream();
+        payload.destroy(new Error('ERROR'));
+
+        const promise = Shot.inject(dispatch, { method: 'post', url: '/', payload });
+        await expect(promise).to.reject('ERROR');
+    });
+
     it('iterates over payload', async () => {
 
         const dispatch = async function (req, res) {
