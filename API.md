@@ -53,10 +53,10 @@ Injects a fake request into an HTTP server.
   - `remoteAddress` - an optional string specifying the client remote address. Defaults to `'127.0.0.1'`.
   - `payload` - an optional request payload. Can be a string, Buffer, Stream or object.
   - `simulate` - an object containing flags to simulate various conditions:
-    - `end` - indicates whether the request will fire an `end` event. Defaults to `undefined`, meaning an `end` event will fire.
+    - `end` - indicates whether the request will fire an `end` event. Defaults to `true`, meaning an `end` event will fire.
     - `split` - indicates whether the request payload will be split into chunks. Defaults to `undefined`, meaning payload will not be chunked.
     - `error` - whether the request will emit an `error` event. Defaults to `undefined`, meaning no `error` event will be emitted. If set to `true`, the emitted error will have a message of `'Simulated'`.
-    - `close` - whether the request will emit a `close` event. Defaults to `undefined`, meaning no `close` event will be emitted.
+    - `close` - whether the request will emit a `close` event. Defaults to `true`, meaning a `close` event will be emitted.
   - `validate` - Optional flag to validate this options object. Defaults to `true`.
 
 Returns a response object where:

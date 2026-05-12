@@ -725,7 +725,7 @@ describe('_read()', () => {
 
             req.on('end', () => {
 
-                res.writeHead(200, { 'Content-Length': 0 });
+                res.writeHead(200, { 'Content-Length': buffer.length });
                 res.end(buffer);
                 req.destroy();
             });
@@ -734,9 +734,9 @@ describe('_read()', () => {
         };
 
         const body = 'something special just for you';
-        const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body });
+        const res = await Shot.inject(dispatch, { method: 'post', url: '/', payload: body });
         expect(res.payload).to.equal(body);
-        expect(events).to.equal(['end']);
+        expect(events).to.equal(['end', 'close']);
     });
 
     it('supports async iteration', async () => {
@@ -782,7 +782,7 @@ describe('_read()', () => {
         const body = 'something special just for you';
         const res = await Shot.inject(dispatch, { method: 'get', url: '/', payload: body, simulate: { split: true } });
         expect(res.payload).to.equal(body);
-        expect(events).to.equal(['end']);
+        expect(events).to.equal(['end', 'close']);
     });
 
     it('simulates error (close = false)', async () => {
@@ -841,7 +841,7 @@ describe('_read()', () => {
             internals.trackStreamLifetime(req, events);
         };
 
-        Shot.inject(dispatch, { method: 'get', url: '/', simulate: { end: false } });       // Stuck
+        Shot.inject(dispatch, { method: 'get', url: '/', simulate: { close: false, end: false } });       // Stuck
         await internals.wait(10);
         expect(events).to.equal([]);
     });
@@ -855,7 +855,7 @@ describe('_read()', () => {
             internals.trackStreamLifetime(req, events);
         };
 
-        Shot.inject(dispatch, { method: 'get', url: '/', payload: '1234567', simulate: { end: false } });       // Stuck
+        Shot.inject(dispatch, { method: 'get', url: '/', payload: '1234567', simulate: { close: false, end: false } });       // Stuck
         await internals.wait(10);
         expect(events).to.equal([]);
     });
