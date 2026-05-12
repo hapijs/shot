@@ -758,6 +758,22 @@ describe('_read()', () => {
         expect(res.payload).to.equal(body);
     });
 
+    it('emits req "close" on "finish"', async () => {
+
+        const events = [];
+        const dispatch = function (req, res) {
+
+            res.end('ok');
+
+            internals.trackStreamLifetime(req, events, 'req');
+            internals.trackStreamLifetime(res, events, 'res');
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/' });
+        expect(res.payload).to.equal('ok');
+        expect(events).to.equal(['close (req)']);
+    });
+
     it('simulates split', async () => {
 
         const events = [];
