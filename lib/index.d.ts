@@ -161,9 +161,7 @@ export interface RequestOptions {
     validate?: boolean;
 }
 
-type InjectionListener = (req: InjectedRequest, res: ServerResponse) => void;
-
-type MaybeInjectionListener = (req: MaybeInjectedRequest, res: ServerResponse) => void;
+export type InjectionListener = (req: MaybeInjectedRequest, res: ServerResponse) => void;
 
 /**
  * Injects a fake request into an HTTP server.
@@ -174,7 +172,6 @@ type MaybeInjectionListener = (req: MaybeInjectedRequest, res: ServerResponse) =
  * @return A Promise that resolves with a ResponseObject object
  */
 export function inject(dispatchFunc: InjectionListener, options: RequestOptions | string): Promise<ResponseObject>;
-export function inject(dispatchFunc: MaybeInjectionListener, options: RequestOptions | string): Promise<ResponseObject>;
 
 /**
  * Checks if given object is a Shot Request object.
