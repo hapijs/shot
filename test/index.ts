@@ -60,6 +60,13 @@ await Shot.inject((req: Shot.MaybeInjectedRequest, res) => {
     expect.type<boolean>(Shot.isInjection(req));
     expect.type<boolean>(Shot.isInjection(res));
 
+    if (Shot.isInjection(req)) {
+        expect.type<Shot.InjectedRequest>(req);
+    }
+    else {
+        expect.type<IncomingMessage>(req);
+    }
+
     res.end();
 }, '/');
 
