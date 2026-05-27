@@ -183,4 +183,5 @@ export function inject(dispatchFunc: MaybeInjectionListener, options: RequestOpt
  *
  * @return true if the object is a shot request, otherwise false.
  */
+export function isInjection(obj: MaybeInjectedRequest): obj is InjectedRequest;
 export function isInjection(obj: MaybeInjectedRequest | ServerResponse): boolean;
