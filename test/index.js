@@ -677,6 +677,43 @@ describe('inject()', () => {
         expect(res.statusCode).to.equal(404);
         expect(res.payload).to.equal('data');
     });
+
+    it('completes successfully within timeout', async () => {
+
+        const dispatch = function (req, res) {
+
+            setTimeout(() => {
+
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.end('fast');
+            }, 10);
+        };
+
+        const res = await Shot.inject(dispatch, { method: 'get', url: '/', timeout: 200 });
+        expect(res.statusCode).to.equal(200);
+        expect(res.payload).to.equal('fast');
+    });
+
+    it('rejects with timeout error when request exceeds timeout', async () => {
+
+        const dispatch = function (req, res) {
+
+            setTimeout(() => {
+
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.end('late');
+            }, 100);
+        };
+
+        const promise = Shot.inject(dispatch, { method: 'get', url: '/', timeout: 25 });
+        await expect(promise).to.reject('Request timed out after 25ms');
+    });
+
+    it('validates timeout option', async () => {
+
+        await expect(Shot.inject((req, res) => { }, { url: '/', timeout: -5 })).to.reject(/^Invalid options:/);
+        await expect(Shot.inject((req, res) => { }, { url: '/', timeout: 'invalid' })).to.reject(/^Invalid options:/);
+    });
 });
 
 describe('writeHead()', () => {
